@@ -8,6 +8,11 @@ import ply.yacc as yacc
 import sys
 
 
+# Variable Tables
+variable_tables = dict()
+int_set = set()
+double_set = set()
+
 # List of token names
 
 tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
@@ -72,11 +77,23 @@ Regular expression rules with no action code
 ************************************************
 """
 
+
 # Check for reserved words
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t_dict = t.__dict__
+
     if t.value in reserved:
         t.type = reserved[t.value]
+    else:
+        if t_dict['lineno'] in int_set:
+            if t_dict['value'] not in variable_tables:
+                variable_tables[t_dict['value']] = ['int', 0]
+
+        elif t_dict['lineno'] in double_set:
+            if t_dict['value'] not in variable_tables:
+                variable_tables[t_dict['value']] = ['doubles', 0]
+
     return t
 
 
@@ -114,7 +131,6 @@ def t_error(t):
 
 # Build the lexer
 lexer = lex.lex()
-
 
 """ # For testing the lexer give the lexer some input
 while True:
@@ -199,6 +215,14 @@ def p_type(p):
     """ type :        INT
                     | DOUBLE
     """
+    p_dict = p.slice[1].__dict__
+    var_type = p_dict['value']
+
+    if var_type == 'int':
+        int_set.add(p_dict['lineno'])
+    elif var_type == 'double':
+        double_set.add(p_dict['lineno'])
+
 
 
 def p_methods(p):
@@ -308,10 +332,11 @@ while True:
 
 # file = open('codigoprueba', 'r')
 file = open('maesumamatrices.txt', 'r')
+# file = open('debug.txt', 'r')
 code = file.read()
 print(code)
 parser.parse(code)
-
+print(variable_tables)
 
 
 
