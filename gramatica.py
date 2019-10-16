@@ -13,6 +13,24 @@ variable_tables = dict()
 int_set = set()
 double_set = set()
 
+# Quadruple
+quadruple_list = list()
+operand_stack = list()
+
+# Avail
+avail = ['T'+str(i) for i in range(1, 100)]
+avail_dict = dict()
+
+
+class Quadruple:
+
+    @staticmethod
+    def square(op_code, operand1, operand2, result):
+        quadruple_list.append((op_code, operand1, operand2, result))
+
+
+square_obj = Quadruple()
+
 # List of token names
 
 tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
@@ -22,8 +40,7 @@ tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'LPAREN', 'RPAREN', 'LBR
 
 # Reserved words
 
-reserved = {'program': 'PROGRAM',
-            'if': 'IF',
+reserved = {'if': 'IF',
             'do': 'DO',
             'while': 'WHILE',
             'main': 'MAIN',
@@ -86,7 +103,9 @@ def t_ID(t):
     if t.value in reserved:
         t.type = reserved[t.value]
     else:
+        operand_stack.append(t_dict['value'])             # Push "operand's stack" (id)
         if t_dict['lineno'] in int_set:
+
             if t_dict['value'] not in variable_tables:
                 variable_tables[t_dict['value']] = ['int', 0]
 
@@ -147,14 +166,13 @@ while True:
 
 # Grammar functions
 def p_program(p):
-    """ program : PROGRAM ID SEMICOLON variables methods MAIN LBRACE severalstatutes RBRACE
+    """ program : variables methods MAIN LBRACE severalstatutes RBRACE
     """
 
 
 # Quitar variables????
 def p_statutes(p):
     """ statutes :    conditional
-                    | variables
                     | editvariables
                     | cyclical
                     | calling
@@ -197,12 +215,13 @@ def p_cyclical(p):
 
 
 def p_variables(p):
-    """ variables :   type ID ASSIGN arithexp SEMICOLON variables
-                    | type ID ASSIGN arithexp SEMICOLON
-                    | type ID SEMICOLON variables
+    """ variables : type ID SEMICOLON variables
                     | type ID dimensions SEMICOLON
                     | empty
     """
+
+    if str(p.slice[1]) == 'type':
+        operand_stack.pop()      # These are not operands, we need to remove them at the beginning
 
 
 def p_dimensions(p):
@@ -263,6 +282,22 @@ def p_arithexp(p):
                     | arithterm PLUS arithexp
                     | arithterm MINUS arithexp
     """
+    if len(p) > 2:
+        if str(p[2]) == 'plus':                         # ONLY FOR PLUS
+            operand2 = operand_stack.pop()              # op2 = pop operand stack
+            operand1 = operand_stack.pop()              # op1 = pop operand stack
+            temporal = avail.pop(0)                     # Tr = Temporal avail
+            avail_dict[temporal] = operand1 + operand2  # Tr = op1 + op2
+
+            # op_code, operand1, operand2, result
+            square_obj.square(p[2], operand1, operand2, temporal)       # Save square
+
+            operand_stack.append(temporal)              # push to operand stack Tr
+
+            # If op1 or op2 are temporal, return them to avail
+            if operand1 in avail_dict or operand2 in avail_dict:
+                avail.append(temporal)
+                del avail_dict[temporal]
 
 
 def p_arithterm(p):
@@ -270,11 +305,26 @@ def p_arithterm(p):
                     | arithfunction TIMES arithterm
                     | arithfunction DIVISION arithterm
     """
+    if len(p) > 2:
+        if str(p[2]) == '*':                         # ONLY FOR *
+            operand2 = operand_stack.pop()              # op2 = pop operand stack
+            operand1 = operand_stack.pop()              # op1 = pop operand stack
+            temporal = avail.pop(0)                     # Tr = Temporal avail
+            avail_dict[temporal] = operand1 + operand2  # Tr = op1 + op2
+
+            # op_code, operand1, operand2, result
+            square_obj.square(p[2], operand1, operand2, temporal)       # Save square
+
+            operand_stack.append(temporal)              # push to operand stack Tr
+
+            # If op1 or op2 are temporal, return them to avail
+            if operand1 in avail_dict or operand2 in avail_dict:
+                avail.append(temporal)
+                del avail_dict[temporal]
 
 
 def p_arithfunction(p):
-    """ arithfunction : selectid
-                    | CONST
+    """ arithfunction : idconst
                     | ID PLUSPLUS
                     | ID MINUSMINUS
                     | LPAREN arithexp RPAREN
@@ -302,7 +352,7 @@ def p_logicfunction(p):
 
 
 def p_idconst(p):
-    """ idconst :     selectid
+    """ idconst :     ID
                     | CONST
     """
 
@@ -331,13 +381,29 @@ while True:
 
 
 # file = open('codigoprueba', 'r')
-file = open('maesumamatrices.txt', 'r')
-# file = open('debug.txt', 'r')
+# file = open('maesumamatrices.txt', 'r')
+file = open('debug.txt', 'r')
 code = file.read()
 print(code)
 parser.parse(code)
+
+print("\n\n"+"*"*20 + "\n" + "Cuadros: " + "\n"+"*"*20)
+for cuadro in quadruple_list:
+    print(cuadro)
+
+
+print("\n\n"+"*"*20 + "\n" + "Avail Dict: " + "\n"+"*"*20)
+print(avail_dict)
+
+
+# Assigning values
+# print(operand_stack)
+while(operand_stack):
+    value = operand_stack.pop()
+    destiny = operand_stack.pop()
+    variable_tables[destiny][1] = value
+
+
+print("\n\n"+"*"*20 + "\n" + "Variable Tables: " + "\n"+"*"*20)
 print(variable_tables)
 
-
-
-# TO CHECK X = X + 2
