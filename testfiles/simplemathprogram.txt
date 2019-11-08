@@ -1,0 +1,34 @@
+int a;
+int b;
+double c;
+double d;
+int e;
+main {
+
+b++;
+
+b = a plus c;
+
+a++;
+
+a = b * 2;
+
+b = c/4;
+
+c = c - 5 - 6;
+
+a = 5 * 4;
+
+b = c * a;
+
+a = a plus b plus c;
+
+a = a plus b * (c plus d plus e);
+
+if (((5 < 6) and (c == 3)) or (4 >7)){
+
+}
+else{
+}
+
+}

@@ -1,0 +1,26 @@
+int a;
+int b;
+double c;
+double d;
+int e;
+main {
+
+if ((a>b) and (b<c))
+{
+	if (b<d)
+	{
+		b = d;
+	}
+	else
+	{
+		b = c;
+	}
+}
+else
+{
+	if (a < x)
+	{
+		a = x plus y;
+	}
+}
+}

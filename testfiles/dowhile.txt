@@ -1,0 +1,12 @@
+int a;
+int b;
+double c;
+double d;
+int e;
+main 
+{
+	do
+	{
+		a = a plus b;
+	}while (a>c)
+}

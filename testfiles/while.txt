@@ -1,0 +1,25 @@
+int a;
+int b;
+double c;
+double d;
+int e;
+main 
+{
+	while ((x > y) and (x< z))
+	{
+		if (x > w)
+		{
+			x = x plus a;
+		}
+		else
+		{
+			while (z > w)
+			{
+				if (a>b)
+				{
+					a = c;
+				}
+			}
+		}
+	}
+}
