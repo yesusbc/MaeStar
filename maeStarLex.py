@@ -1,4 +1,5 @@
 import ply.lex as lex
+import quadruple
 
 
 # Quadruple
@@ -6,8 +7,15 @@ operand_stack = list()
 
 # Variable Tables
 variable_tables = dict()
+
+# Procedure directory
+procedure_directory = dict()
+
 int_set = set()
 double_set = set()
+method_set = set()
+
+square_obj = quadruple.Quadruple()
 
 # List of token names
 tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
@@ -75,13 +83,18 @@ Regular expression rules with no action code
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t_dict = t.__dict__
-
     if t.value in reserved:
         t.type = reserved[t.value]
+        if t_dict['value'] == 'method':
+            method_set.add(t_dict['lineno'])
+        if t_dict['value'] == 'main':
+            if len(method_set) > 0:
+                num = square_obj.get_num()
+                square_obj.quadruple_dict[0].pop()
+                square_obj.quadruple_dict[0].append(num)
     else:
         operand_stack.append(t_dict['value'])             # Push "operand's stack" (id)
         if t_dict['lineno'] in int_set:
-
             if t_dict['value'] not in variable_tables:
                 variable_tables[t_dict['value']] = ['int', 0]
 
@@ -89,6 +102,12 @@ def t_ID(t):
             if t_dict['value'] not in variable_tables:
                 variable_tables[t_dict['value']] = ['doubles', 0]
 
+        elif t_dict['lineno'] in method_set:
+            operand_stack.pop()
+            if len(method_set) == 1:
+                square_obj.square("goto", '_', '_', '_')
+            procedure_directory[t_dict['value']] = square_obj.get_num()
+            # print(procedure_directory)
     return t
 
 

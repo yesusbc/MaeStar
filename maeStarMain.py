@@ -18,7 +18,8 @@ filenames = {
     'simplemath': 'testfiles/simplemathprogram.txt',
     'main': 'testfiles/maincode.txt',
     'matrix': 'testfiles/matrix.txt',
-    'for': 'testfiles/for.txt'
+    'for': 'testfiles/for.txt',
+    'method': 'testfiles/methods.txt'
 }
 
 file = open(filenames[filename], 'r')

@@ -7,9 +7,6 @@ jump_stack = list()
 for_stack = list()
 
 
-square_obj = quadruple.Quadruple()
-
-
 # ---------------------------- GRAMMAR FUNCTIONS -------------------------------
 
 
@@ -166,6 +163,7 @@ def p_for4section(p):
     square_obj.quadruple_dict[dir1 + 1].append(num)
     square_obj.square("gotoFor", '_', '_', dir1)
 
+
 def p_ckp_while1(p):
     """ ckp_while1 : empty
     """
@@ -210,7 +208,6 @@ def p_variables(p):
                     | type ID dimensions SEMICOLON
                     | empty
     """
-
     if str(p.slice[1]) == 'type':
         operand_stack.pop()      # These are not operands, we need to remove them at the beginning
 
@@ -236,15 +233,21 @@ def p_type(p):
 
 
 def p_methods(p):
-    """ methods :     METHOD ID LPAREN RPAREN LBRACE severalstatutes RBRACE methods
+    """ methods :     METHOD ID LPAREN RPAREN LBRACE severalstatutes RBRACE return_method methods
                     | empty
-
     """
+
+def p_return_method(p):
+    """ return_method : empty
+    """
+    square_obj.square('Return', '.', '.', '.')
 
 
 def p_calling(p):
     """ calling :     CALL ID LPAREN RPAREN SEMICOLON
     """
+    method_name = p.slice[2].__dict__['value']
+    square_obj.square('call', method_name, '_', procedure_directory[method_name])
 
 
 def p_readwrite(p):
