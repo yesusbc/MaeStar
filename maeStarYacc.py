@@ -4,6 +4,8 @@ from maeStarLex import *
 
 # Jump stack
 jump_stack = list()
+for_stack = list()
+
 
 square_obj = quadruple.Quadruple()
 
@@ -101,8 +103,68 @@ def p_severalstatutes(p):
 def p_cyclical(p):
     """ cyclical :    DO ckp_dowhile1 LBRACE severalstatutes RBRACE WHILE LPAREN logicexp RPAREN ckp_dowhile2
                     | WHILE ckp_while1 LPAREN logicexp RPAREN ckp_while2 LBRACE severalstatutes RBRACE ckp_while3
-                    | FOR LPAREN ID ASSIGN CONST SEMICOLON logicexp SEMICOLON arithexp RPAREN LBRACE severalstatutes RBRACE
+                    | FOR LPAREN for1section SEMICOLON for2section SEMICOLON for3section RPAREN LBRACE severalstatutes RBRACE for4section
     """
+
+
+def p_for1section(p):
+    """ for1section : ID ASSIGN CONST
+    """
+    id_name = p.__dict__['slice'][1].__dict__['value']
+    operation = p.__dict__['slice'][2].__dict__['value']
+    value = p.__dict__['slice'][3].__dict__['value']
+    square_obj.square(operation, value, '_', id_name)
+    operand_stack.pop()
+    operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
+
+
+def p_for2section(p):
+    """ for2section : logicfunction
+    """
+
+
+def p_for3section(p):
+    """ for3section : ID PLUSPLUS
+                    | ID MINUSMINUS
+                    | for3_1section
+    """
+    if str(p.__dict__['slice'][1]) != "for3_1section":
+        id_name = p[1]
+        operation = p[2]
+        for_avail_num = len(for_stack)
+        for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
+        for_stack.append((operation, id_name, '1', 'TF'+str(for_avail_num)))
+        operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
+
+
+def p_for3_1section(p):
+    """ for3_1section : ID PLUS CONST
+                    | ID MINUS CONST
+                    | ID TIMES CONST
+                    | ID DIVISION CONST
+    """
+    id_name = p.__dict__['slice'][1].__dict__['value']
+    operation = p.__dict__['slice'][2].__dict__['value']
+    value = p.__dict__['slice'][3].__dict__['value']
+    for_avail_num = len(for_stack)
+    for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
+    for_stack.append((operation, value, id_name, 'TF'+str(for_avail_num)))
+    operand_stack.pop()
+    operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
+
+
+def p_for4section(p):
+    """ for4section : empty
+    """
+    dir1 = jump_stack.pop()
+    num = square_obj.get_num() + 2      # Plus 2 because of the next two quadruples we're going to add
+
+    op_code, operand1, operan2, result = for_stack.pop()
+    square_obj.square(op_code, operand1, operan2, result)
+
+    square_obj.quadruple_dict[dir1 + 1].pop()
+    square_obj.quadruple_dict[dir1 + 1].append(num)
+    square_obj.square("gotoFor", '_', '_', dir1)
 
 def p_ckp_while1(p):
     """ ckp_while1 : empty
@@ -256,9 +318,14 @@ def p_logicfunction(p):
                     | idconst EQUALS idconst
                     | LPAREN logicexp RPAREN
     """
-    if len(p) > 2:
-        if str(p[2]) in ('<', '>', '=='):
-            quadruple.generate_quadruple(p, square_obj, operand_stack)
+    if p.__dict__['stack'][6].__dict__['value'] == 'for':
+        num = square_obj.get_num()
+        jump_stack.append(num)
+        quadruple.generate_quadruple_for(p, square_obj, operand_stack)
+    else:
+        if len(p) > 2:
+            if str(p[2]) in ('<', '>', '=='):
+                quadruple.generate_quadruple(p, square_obj, operand_stack)
 
 
 def p_idconst(p):

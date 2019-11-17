@@ -5,7 +5,10 @@
 
 
 from maeStarYacc import square_obj, get_parser
-from quadruple import get_vail
+from quadruple import get_avail
+import sys
+
+filename = sys.argv[1]
 
 
 filenames = {
@@ -14,13 +17,11 @@ filenames = {
     'do-while': 'testfiles/dowhile.txt',
     'simplemath': 'testfiles/simplemathprogram.txt',
     'main': 'testfiles/maincode.txt',
-    'matrix': 'testfiles/matrix.txt'
+    'matrix': 'testfiles/matrix.txt',
+    'for': 'testfiles/for.txt'
 }
 
-
-# file = open('codigoprueba', 'r')
-# file = open('maesumamatrices.txt', 'r')
-file = open(filenames['ifelse'], 'r')
+file = open(filenames[filename], 'r')
 code = file.read()
 print(code)
 
@@ -31,7 +32,7 @@ print("\n\n"+"*"*20 + "\n" + "Cuadros: " + "\n"+"*"*20)
 for square in square_obj.quadruple_dict:
     print("{0}.- {1}".format(square, square_obj.quadruple_dict[square]))
 
-get_vail()
+get_avail()
 
 # Assigning values
 # print(operand_stack)
