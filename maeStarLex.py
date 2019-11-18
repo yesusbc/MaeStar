@@ -1,5 +1,6 @@
 import ply.lex as lex
 import quadruple
+import numpy as np
 
 
 # Quadruple
@@ -90,17 +91,18 @@ def t_ID(t):
         if t_dict['value'] == 'main':
             if len(method_set) > 0:
                 num = square_obj.get_num()
+                print(num)
                 square_obj.quadruple_dict[0].pop()
-                square_obj.quadruple_dict[0].append(num)
+                square_obj.quadruple_dict[0].append(num + 1)
     else:
         operand_stack.append(t_dict['value'])             # Push "operand's stack" (id)
         if t_dict['lineno'] in int_set:
             if t_dict['value'] not in variable_tables:
-                variable_tables[t_dict['value']] = ['int', 0]
+                variable_tables[t_dict['lineno']] = [['int', 0],['symbol', t_dict['value']]]
 
         elif t_dict['lineno'] in double_set:
             if t_dict['value'] not in variable_tables:
-                variable_tables[t_dict['value']] = ['doubles', 0]
+                variable_tables[t_dict['lineno']] = [['doubles', 0],['symbol', t_dict['value']]]
 
         elif t_dict['lineno'] in method_set:
             operand_stack.pop()
@@ -116,6 +118,14 @@ def t_CONST(t):
     r'\d+'
     operand_stack.append(t.value)
     t.value = int(t.value)
+    if t.__dict__['lineno'] in int_set:
+        if len(variable_tables[t.__dict__['lineno']]) < 3:
+            # [0] * t.value
+            variable_tables[t.__dict__['lineno']][0][1] = [variable_tables[t.__dict__['lineno']][0][1]]*t.value
+            operand_stack.pop()
+        else:
+            # [0,0,0] * t.value
+            variable_tables[t.__dict__['lineno']][0][1] = [variable_tables[t.__dict__['lineno']][0][1]]*t.value
     """
     try:
         t.value = int(t.value)
@@ -136,6 +146,8 @@ def t_COMMENT(t):
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+    # print(operand_stack)
+    # print(square_obj.quadruple_dict)
 
 
 # Error handling rule
@@ -146,7 +158,6 @@ def t_error(t):
 
 # Build the lexer
 lexer = lex.lex()
-
 """ ************For testing the lexer give the lexer some input************
 while True:
     # Tokenize

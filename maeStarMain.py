@@ -6,6 +6,7 @@
 
 from maeStarYacc import square_obj, get_parser
 from quadruple import get_avail
+from maeStarLex import variable_tables
 import sys
 
 filename = sys.argv[1]
@@ -19,7 +20,8 @@ filenames = {
     'main': 'testfiles/maincode.txt',
     'matrix': 'testfiles/matrix.txt',
     'for': 'testfiles/for.txt',
-    'method': 'testfiles/methods.txt'
+    'method': 'testfiles/methods.txt',
+    'dm': 'testfiles/dimensional_variables.txt'
 }
 
 file = open(filenames[filename], 'r')
@@ -43,5 +45,5 @@ get_avail()
 #    variable_tables[destiny][1] = value
 
 
-# print("\n\n"+"*"*20 + "\n" + "Variable Tables: " + "\n"+"*"*20)
-# print(variable_tables)
+print("\n\n"+"*"*20 + "\n" + "Variable Tables: " + "\n"+"*"*20)
+print(variable_tables)

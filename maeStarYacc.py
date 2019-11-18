@@ -6,6 +6,11 @@ from maeStarLex import *
 jump_stack = list()
 for_stack = list()
 
+dimensions_direction = list()
+dimensions_set = set()
+
+dimensions_dict = dict()
+
 
 # ---------------------------- GRAMMAR FUNCTIONS -------------------------------
 
@@ -26,14 +31,38 @@ def p_statutes(p):
 
 
 def p_editvariables(p):
-    """ editvariables : ID ASSIGN arithexp SEMICOLON
-                      | ID dimensions ASSIGN arithexp SEMICOLON
+    """ editvariables : singledimension
+                      | multidimension
                       | incrementdecrement
+    """
+
+
+def p_singledimension(p):
+    """ singledimension : ID ASSIGN arithexp SEMICOLON
     """
     if p[1]:
         re = operand_stack.pop(0)
         id1 = operand_stack.pop(0)
         square_obj.square('=', id1, '_', re)       # Save square
+
+
+def p_multidimension(p):
+    """ multidimension : ID dimensions ASSIGN arithexp SEMICOLON
+    """
+    # adding dimension to array variables in quadruples
+    line_number =  str(p.slice[1].__dict__['lineno'])
+    if line_number in dimensions_dict:
+        re = operand_stack.pop(0)
+        id1 = operand_stack.pop()
+        square_obj.square('=', id1, '_', re)       # Save square
+        to_add_value = dimensions_dict[line_number]
+        num = square_obj.get_num() - 1
+        prev_value = square_obj.quadruple_dict[num].pop()
+        new_value = prev_value + to_add_value
+        square_obj.quadruple_dict[num].append(new_value)
+
+        for _ in range(new_value.count('[')):
+            operand_stack.pop()
 
 
 def p_incrementdecrement(p):
@@ -213,9 +242,17 @@ def p_variables(p):
 
 
 def p_dimensions(p):
-    """ dimensions :  LBRACKET idconst RBRACKET dimensions
-                    | LBRACKET idconst RBRACKET
+    """ dimensions :  LBRACKET CONST RBRACKET dimensions
+                    | LBRACKET CONST RBRACKET
     """
+    line_number = str(p.slice[1].__dict__['lineno'])
+    value = str(p.slice[2].__dict__['value'])
+
+    if line_number in dimensions_dict:
+         prev_value = dimensions_dict[line_number]
+         dimensions_dict[line_number] = '[' + value + ']'  + prev_value
+    else:
+        dimensions_dict[line_number] = '[' + value + ']'
 
 
 def p_type(p):
@@ -248,6 +285,7 @@ def p_calling(p):
     """
     method_name = p.slice[2].__dict__['value']
     square_obj.square('call', method_name, '_', procedure_directory[method_name])
+    operand_stack.pop(0)
 
 
 def p_readwrite(p):
@@ -353,4 +391,3 @@ def get_parser():
     """
     parser = yacc.yacc()
     return parser
-
