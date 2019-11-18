@@ -1,4 +1,3 @@
-import quadruple
 import ply.yacc as yacc
 from maeStarLex import *
 
@@ -6,9 +5,11 @@ from maeStarLex import *
 jump_stack = list()
 for_stack = list()
 
+# will hold a jump stack specifically for "dimensions"
 dimensions_direction = list()
+# will hold the line number of the dimensions
 dimensions_set = set()
-
+# With the line number as key, it will hold the value/dimensions of the specific variable
 dimensions_dict = dict()
 
 
@@ -50,18 +51,20 @@ def p_multidimension(p):
     """ multidimension : ID dimensions ASSIGN arithexp SEMICOLON
     """
     # adding dimension to array variables in quadruples
-    line_number =  str(p.slice[1].__dict__['lineno'])
+    line_number = str(p.slice[1].__dict__['lineno'])
+
     if line_number in dimensions_dict:
         re = operand_stack.pop(0)
         id1 = operand_stack.pop()
-        square_obj.square('=', id1, '_', re)       # Save square
+        square_obj.square('=', id1, '_', re)
+
         to_add_value = dimensions_dict[line_number]
         num = square_obj.get_num() - 1
         prev_value = square_obj.quadruple_dict[num].pop()
         new_value = prev_value + to_add_value
-        square_obj.quadruple_dict[num].append(new_value)
+        square_obj.quadruple_dict[num].append(new_value)    # We add the new dimension to the variable
 
-        for _ in range(new_value.count('[')):
+        for _ in range(new_value.count('[')):   # We need to remove the extra operands
             operand_stack.pop()
 
 
@@ -136,9 +139,9 @@ def p_cyclical(p):
 def p_for1section(p):
     """ for1section : ID ASSIGN CONST
     """
-    id_name = p.__dict__['slice'][1].__dict__['value']
-    operation = p.__dict__['slice'][2].__dict__['value']
-    value = p.__dict__['slice'][3].__dict__['value']
+    id_name = p.slice[1].__dict__['value']
+    operation = p.slice[2].__dict__['value']
+    value = p.slice[3].__dict__['value']
     square_obj.square(operation, value, '_', id_name)
     operand_stack.pop()
     operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
@@ -154,7 +157,7 @@ def p_for3section(p):
                     | ID MINUSMINUS
                     | for3_1section
     """
-    if str(p.__dict__['slice'][1]) != "for3_1section":
+    if str(p.slice[1]) != "for3_1section":
         id_name = p[1]
         operation = p[2]
         for_avail_num = len(for_stack)
@@ -169,9 +172,9 @@ def p_for3_1section(p):
                     | ID TIMES CONST
                     | ID DIVISION CONST
     """
-    id_name = p.__dict__['slice'][1].__dict__['value']
-    operation = p.__dict__['slice'][2].__dict__['value']
-    value = p.__dict__['slice'][3].__dict__['value']
+    id_name = p.slice[1].__dict__['value']
+    operation = p.slice[2].__dict__['value']
+    value = p.slice[3].__dict__['value']
     for_avail_num = len(for_stack)
     for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
     for_stack.append((operation, value, id_name, 'TF'+str(for_avail_num)))
@@ -185,8 +188,8 @@ def p_for4section(p):
     dir1 = jump_stack.pop()
     num = square_obj.get_num() + 2      # Plus 2 because of the next two quadruples we're going to add
 
-    op_code, operand1, operan2, result = for_stack.pop()
-    square_obj.square(op_code, operand1, operan2, result)
+    op_code, operand1, operand2, result = for_stack.pop()
+    square_obj.square(op_code, operand1, operand2, result)
 
     square_obj.quadruple_dict[dir1 + 1].pop()
     square_obj.quadruple_dict[dir1 + 1].append(num)
