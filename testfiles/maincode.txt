@@ -1,64 +1,34 @@
-program myprogram; 
-
-int a = 3;
-double x = 4;
-int f[3][5][5];
+int x;
+int b;
+int c;
+int d;
+double a;
+int f[5];
 
 method calcularcuadros(){
-	a = 5;
+	a = a * a;
 	f[4] = 5;
 }
 
 
 main 
 { 
-if ( 3==3 ) { 
-	a = 4;
-}
 
-if (a > x) {
-}else{
-}
+	do
+	{
+		a = a plus b;
+	}while(a < c)
 
-
-do 
-{
-	x = x++;
-}while(a == x)
-
-
-while ( p > 3) 
-{
-	a=  2;
-	a = 4;
-	b++;
-	b--;
-	b[2]++;
-	b[3]--;
-	a = c / a;
-	a = c * a;
-}
-
-
-for(x = 3 ; b < c ; x++) 
-{
-
-}
 
 #.* comment #.*
 
 call calcularcuadros();
 
 read(a);
-read(a,b,c,d);
-
+read(a,x);
 
 write(a);
 write(2);
-
 write(3 < 4);
-
- c = (b * y / (a +- b +- c +- (x * y)));
-
 
 }

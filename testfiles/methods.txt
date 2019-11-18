@@ -1,0 +1,22 @@
+int a;
+int b;
+double c;
+double d;
+int e;
+
+
+method calcularcuadros(){
+	b = b*b;
+}
+
+method imprimircuadros(){
+	b = 4;
+}
+
+
+main {
+b = a plus c;
+call calcularcuadros();
+call imprimircuadros();
+
+}

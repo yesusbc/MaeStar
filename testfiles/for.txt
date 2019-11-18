@@ -1,0 +1,21 @@
+int a;
+int b;
+int c;
+main 
+{ 
+	if ( 2==3 ) { 
+		a = 4;
+	}
+	for(x = 3 ; b < c ; x plus 2) 
+	{
+		a++;
+		a = b * 2;
+		for( y = 4; y < 10; y++)
+		{
+			b = c/4;
+			c = c - 5 - 6;
+		}
+		b = b plus y;
+	}
+	a = b - x;
+}

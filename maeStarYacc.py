@@ -295,6 +295,10 @@ def p_readwrite(p):
     """ readwrite :   READ LPAREN idreadingloop RPAREN SEMICOLON
                     | WRITE LPAREN writecontent RPAREN SEMICOLON
     """
+    while(operand_stack):
+        id_name = operand_stack.pop()
+        operation = p[1]
+        square_obj.square(operation, '_','_', id_name)
 
 
 # X : A X
@@ -303,6 +307,7 @@ def p_idreadingloop(p):
     """ idreadingloop : ID COMA idreadingloop
                     | ID
     """
+
 
 
 # to print messages is missing

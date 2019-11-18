@@ -1,0 +1,23 @@
+int a;
+double x;
+int f[3][5];
+
+method calcularcuadros(){
+	a = 5;
+	f[2][2] = 6;
+}
+
+main 
+{
+while ( p > 3) 
+{
+	a = c / a;
+	a = c * a;
+}
+
+#.* calling method #.*
+call calcularcuadros();
+
+f[1][2] = b * 5;
+
+}

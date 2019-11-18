@@ -6,8 +6,9 @@
 
 from maeStarYacc import square_obj, get_parser
 from quadruple import get_avail
-from maeStarLex import variable_tables
+from maeStarLex import variable_tables, procedure_directory
 import sys
+import pickle
 
 filename = sys.argv[1]
 
@@ -47,3 +48,16 @@ get_avail()
 
 print("\n\n"+"*"*20 + "\n" + "Variable Tables: " + "\n"+"*"*20)
 print(variable_tables)
+
+print(procedure_directory)
+
+
+with open('quadruples', 'wb') as file_handler:
+    pickle.dump(square_obj.quadruple_dict, file_handler)
+
+
+with open('variableTables', 'wb') as file_handler:
+    pickle.dump(variable_tables, file_handler)
+
+with open('procedureDirectory', 'wb') as file_handler:
+    pickle.dump(procedure_directory, file_handler)
