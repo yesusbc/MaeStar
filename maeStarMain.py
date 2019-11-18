@@ -47,17 +47,21 @@ get_avail()
 
 
 print("\n\n"+"*"*20 + "\n" + "Variable Tables: " + "\n"+"*"*20)
-print(variable_tables)
+print(variable_tables, end="\n\n")
 
-print(procedure_directory)
+print(procedure_directory, end="\n\n")
 
-
+print("#"*50)
 with open('quadruples', 'wb') as file_handler:
     pickle.dump(square_obj.quadruple_dict, file_handler)
+    print("Quadruples imported correctly")
 
 
 with open('variableTables', 'wb') as file_handler:
     pickle.dump(variable_tables, file_handler)
+    print("Variable Tables imported correctly")
 
 with open('procedureDirectory', 'wb') as file_handler:
     pickle.dump(procedure_directory, file_handler)
+    print("Procedure Directory imported correctly")
+print("#"*50)
