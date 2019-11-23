@@ -150,7 +150,9 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
     # print(operand_stack)
-    # print(square_obj.quadruple_dict)
+    # for x in square_obj.quadruple_dict:
+    #     print(square_obj.quadruple_dict[x])
+    # print("********")
 
 
 # Error handling rule

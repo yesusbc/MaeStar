@@ -74,6 +74,8 @@ def p_incrementdecrement(p):
     """
     if p[2] == '++':
         quadruple.generate_quadruple_inc_dec(p, square_obj, operand_stack)
+    elif p[2] == '--':
+        quadruple.generate_quadruple_inc_dec(p, square_obj, operand_stack)
 
 
 def p_selectid(p):
@@ -148,7 +150,7 @@ def p_for1section(p):
 
 
 def p_for2section(p):
-    """ for2section : logicfunction
+    """ for2section : forlogicfunction
     """
 
 
@@ -158,12 +160,13 @@ def p_for3section(p):
                     | for3_1section
     """
     if str(p.slice[1]) != "for3_1section":
-        id_name = p[1]
-        operation = p[2]
-        for_avail_num = len(for_stack)
-        for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
-        for_stack.append((operation, id_name, '1', 'TF'+str(for_avail_num)))
-        operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
+        if str(p.slice[2].__dict__['value']) == '++' or str(p.slice[2].__dict__['value']) == '--':
+            id_name = p[1]
+            operation = p[2]
+            for_avail_num = len(for_stack)
+            for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
+            for_stack.append((operation, id_name, '1', 'TF'+str(for_avail_num)))
+            operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
 
 
 def p_for3_1section(p):
@@ -367,14 +370,20 @@ def p_logicfunction(p):
                     | idconst EQUALS idconst
                     | LPAREN logicexp RPAREN
     """
-    if p.__dict__['stack'][6].__dict__['value'] == 'for':
-        num = square_obj.get_num()
-        jump_stack.append(num)
-        quadruple.generate_quadruple_for(p, square_obj, operand_stack)
-    else:
-        if len(p) > 2:
-            if str(p[2]) in ('<', '>', '=='):
-                quadruple.generate_quadruple(p, square_obj, operand_stack)
+    if len(p) > 2:
+        if str(p[2]) in ('<', '>', '=='):
+            quadruple.generate_quadruple(p, square_obj, operand_stack)
+
+
+def p_forlogicfunction(p):
+    """ forlogicfunction : idconst LESSTHAN idconst
+                    | idconst GREATERTHAN idconst
+                    | idconst EQUALS idconst
+                    | LPAREN logicexp RPAREN
+    """
+    num = square_obj.get_num()
+    jump_stack.append(num)
+    quadruple.generate_quadruple_for(p, square_obj, operand_stack)
 
 
 def p_idconst(p):

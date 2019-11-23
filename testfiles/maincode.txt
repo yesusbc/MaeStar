@@ -3,11 +3,18 @@ int b;
 int c;
 int d;
 double a;
-int f[5];
+int f[5][5];
 
 method calcularcuadros(){
 	a = a * a;
-	f[4] = 5;
+	f[4][5] = 5;
+}
+
+method calcWithFor(){
+	for(a=0; a<5; a++)
+	{
+		
+	}
 }
 
 
@@ -23,6 +30,7 @@ main
 #.* comment #.*
 
 call calcularcuadros();
+call calcWithFor();
 
 read(a);
 read(a,x);
