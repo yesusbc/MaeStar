@@ -34,6 +34,7 @@ def p_statutes(p):
 def p_editvariables(p):
     """ editvariables : singledimension
                       | multidimension
+                      | multi_to_singledimension
                       | incrementdecrement
     """
 
@@ -47,6 +48,33 @@ def p_singledimension(p):
         square_obj.square('=', id1, '_', re)       # Save square
 
 
+def p_multi_to_singledimension(p):
+    """ multi_to_singledimension : ID ASSIGN ID dimensions SEMICOLON
+    """
+    line_number = str(p.slice[1].__dict__['lineno'])
+
+    if line_number in dimensions_dict:
+
+        aux = 0
+        if len(operand_stack) > 4:    # PLY carry on the first next ID on the operand stack, but we dont need this right now
+            aux = operand_stack.pop()   # So we are going to ignore it for a bit
+
+        id1 = operand_stack.pop(0)
+        re = operand_stack.pop(0)
+        square_obj.square('=', re, '_', id1)
+
+        to_add_value = dimensions_dict[line_number]
+        num = square_obj.get_num() - 1
+        prev_value = square_obj.quadruple_dict[num][1]
+        new_value = prev_value + to_add_value
+
+        square_obj.quadruple_dict[num][1] = new_value    # We add the new dimension to the variable
+
+        for _ in range(new_value.count('[')):   # We need to remove the extra operands
+            operand_stack.pop()
+        if aux:
+            operand_stack.append(aux)
+
 def p_multidimension(p):
     """ multidimension : ID dimensions ASSIGN arithexp SEMICOLON
     """
@@ -54,6 +82,10 @@ def p_multidimension(p):
     line_number = str(p.slice[1].__dict__['lineno'])
 
     if line_number in dimensions_dict:
+        aux = 0
+        if len(operand_stack) > 4:      # PLY carry on the first next ID on the operand stack, but we dont need this right now
+            aux = operand_stack.pop()   # So we are going to ignore it for a bit
+
         re = operand_stack.pop(0)
         id1 = operand_stack.pop()
         square_obj.square('=', id1, '_', re)
@@ -66,6 +98,8 @@ def p_multidimension(p):
 
         for _ in range(new_value.count('[')):   # We need to remove the extra operands
             operand_stack.pop()
+        if aux:
+            operand_stack.append(aux)
 
 
 def p_incrementdecrement(p):
@@ -250,6 +284,8 @@ def p_variables(p):
 def p_dimensions(p):
     """ dimensions :  LBRACKET CONST RBRACKET dimensions
                     | LBRACKET CONST RBRACKET
+                    | LBRACKET ID RBRACKET dimensions
+                    | LBRACKET ID RBRACKET
     """
     line_number = str(p.slice[1].__dict__['lineno'])
     value = str(p.slice[2].__dict__['value'])
