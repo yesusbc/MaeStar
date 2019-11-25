@@ -422,10 +422,11 @@ def p_logicfunction(p):
     """ logicfunction : idconst LESSTHAN idconst
                     | idconst GREATERTHAN idconst
                     | idconst EQUALS idconst
+                    | idconst NOTEQUAL idconst
                     | LPAREN logicexp RPAREN
     """
     if len(p) > 2:
-        if str(p[2]) in ('<', '>', '=='):
+        if str(p[2]) in ('<', '>', '==', '!='):
             quadruple.generate_quadruple(p, square_obj, operand_stack)
 
 
@@ -433,6 +434,7 @@ def p_forlogicfunction(p):
     """ forlogicfunction : idconst LESSTHAN idconst
                     | idconst GREATERTHAN idconst
                     | idconst EQUALS idconst
+                    | idconst NOTEQUAL idconst
                     | LPAREN logicexp RPAREN
     """
     num = square_obj.get_num()
