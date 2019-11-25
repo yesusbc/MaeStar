@@ -122,13 +122,26 @@ def t_CONST(t):
     operand_stack.append(t.value)
     t.value = int(t.value)
     if t.__dict__['lineno'] in int_set:
-        if len(variable_tables[t.__dict__['lineno']]) < 3:
+        # if len(variable_tables[t.__dict__['lineno']]) < 3:
+        if not isinstance(variable_tables[t.__dict__['lineno']][0][1], list):
             # [0] * t.value  First Dimension
-            variable_tables[t.__dict__['lineno']][0][1] = [variable_tables[t.__dict__['lineno']][0][1]]*t.value
+            variable_tables[t.__dict__['lineno']][0][1] = [variable_tables[t.__dict__['lineno']][0][1]] # 0 to list [0]
+            for i in range(t.value - 1):
+                variable_tables[t.__dict__['lineno']][0][1].append(0)
             operand_stack.pop()
         else:
             # [0,0,0] * t.value Multiple Dimension
-            variable_tables[t.__dict__['lineno']][0][1] = [variable_tables[t.__dict__['lineno']][0][1]]*t.value
+            # We cannot do [0]*number because that create a reference
+            # Therefore we need to create every object individually
+            len_array = len(variable_tables[t.__dict__['lineno']][0][1])
+            variable_tables[t.__dict__['lineno']][0][1] = [variable_tables[t.__dict__['lineno']][0][1]]
+            for _ in range(t.value - 1):
+                to_add_list = list()
+                for i in range(len_array):
+                    to_add_list.append(0)
+                variable_tables[t.__dict__['lineno']][0][1].append(to_add_list)
+
+            operand_stack.pop()
     """
     try:
         t.value = int(t.value)

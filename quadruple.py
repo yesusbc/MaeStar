@@ -1,7 +1,7 @@
 # Avail
 avail = ['T'+str(i) for i in range(1, 100)]
 avail_dict = dict()
-
+import pickle
 
 class Quadruple:
     """
@@ -25,6 +25,9 @@ def get_avail():
     """
     print("\n\n"+"*"*20 + "\n" + "Avail Dict: " + "\n"+"*"*20)
     print(avail_dict)
+    with open('availDict', 'wb') as file_handler:
+        pickle.dump(avail_dict, file_handler)
+        print("Avail Dictionary imported correctly")
 
 
 def generate_quadruple(p, square_obj, operand_stack):
@@ -45,9 +48,9 @@ def generate_quadruple(p, square_obj, operand_stack):
     operand_stack.append(temporal)              # push to operand stack Tr
 
     # If op1 or op2 are temporal, return them to avail
-    if operand1 in avail_dict or operand2 in avail_dict:
-        avail.append(temporal)
-        del avail_dict[temporal]
+    # if operand1 in avail_dict or operand2 in avail_dict:
+    #     avail.append(temporal)
+    #     del avail_dict[temporal]
 
 
 def generate_quadruple_for(p, square_obj, operand_stack):
@@ -67,9 +70,9 @@ def generate_quadruple_for(p, square_obj, operand_stack):
     square_obj.square('gotoF', temporal, '_', '_')
 
     # If op1 or op2 are temporal, return them to avail
-    if operand1 in avail_dict or operand2 in avail_dict:
-        avail.append(temporal)
-        del avail_dict[temporal]
+    # if operand1 in avail_dict or operand2 in avail_dict:
+    #     avail.append(temporal)
+    #     del avail_dict[temporal]
 
 
 def generate_quadruple_inc_dec(p, square_obj, operand_stack):

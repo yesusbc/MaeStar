@@ -1,6 +1,9 @@
 import ply.yacc as yacc
 from maeStarLex import *
 
+from quadruple import avail,avail_dict
+
+
 # Jump stack
 jump_stack = list()
 for_stack = list()
@@ -197,9 +200,14 @@ def p_for3section(p):
         if str(p.slice[2].__dict__['value']) == '++' or str(p.slice[2].__dict__['value']) == '--':
             id_name = p[1]
             operation = p[2]
-            for_avail_num = len(for_stack)
-            for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
-            for_stack.append((operation, id_name, '1', 'TF'+str(for_avail_num)))
+            # for_avail_num = len(for_stack)
+            temporal = avail.pop(0)                     # Tr = Temporal avail
+            avail_dict[temporal] = ""
+
+            for_stack.append(('=', temporal, '_', id_name))
+            for_stack.append((operation, id_name, '1', temporal))
+            # for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
+            # for_stack.append((operation, id_name, '1', 'TF'+str(for_avail_num)))
             operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
 
 
@@ -212,9 +220,15 @@ def p_for3_1section(p):
     id_name = p.slice[1].__dict__['value']
     operation = p.slice[2].__dict__['value']
     value = p.slice[3].__dict__['value']
-    for_avail_num = len(for_stack)
-    for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
-    for_stack.append((operation, value, id_name, 'TF'+str(for_avail_num)))
+
+    temporal = avail.pop(0)                     # Tr = Temporal avail
+    avail_dict[temporal] = ""
+    for_stack.append(('=', temporal, '_', id_name))
+    for_stack.append((operation, value, id_name, temporal))
+
+    # for_avail_num = len(for_stack)
+    # for_stack.append(('=', 'TF'+str(for_avail_num), '_', id_name))
+    # for_stack.append((operation, value, id_name, 'TF'+str(for_avail_num)))
     operand_stack.pop()
     operand_stack.pop()     # We're creating or own quadruple here, so we must remove the operands from the stack
 
@@ -223,7 +237,11 @@ def p_for4section(p):
     """ for4section : empty
     """
     dir1 = jump_stack.pop()
-    num = square_obj.get_num() + 2      # Plus 2 because of the next two quadruples we're going to add
+    num = square_obj.get_num() + 3      # Plus 3 because of the next two quadruples we're going to add and the extra 1
+                                        # because of the instruction
+
+    op_code, operand1, operand2, result = for_stack.pop()
+    square_obj.square(op_code, operand1, operand2, result)
 
     op_code, operand1, operand2, result = for_stack.pop()
     square_obj.square(op_code, operand1, operand2, result)
@@ -337,7 +355,7 @@ def p_readwrite(p):
     while(operand_stack):
         id_name = operand_stack.pop()
         operation = p[1]
-        square_obj.square(operation, '_','_', id_name)
+        square_obj.square(operation, '_', '_', id_name)
 
 
 # X : A X
