@@ -19,6 +19,7 @@ PC_stack = list()                                   # Stack for program counter
 PC = next(iter(quadruple_dict.keys()))              # Program Counter as first element on the list
 EOF = len(quadruple_dict.keys())                    # End Of File
 
+recursive_value = 0
 
 # Convert variable_tables to virtual_machine
 for _,values in variable_tables.items():
@@ -71,8 +72,6 @@ def get_dim2(string):
     aux_string = string[end+1:]
     end = aux_string.index(']')
     index_str2 = aux_string[1:end]
-    print(virtual_machine)
-    print(index_str2)
 
     if isinstance(index_str2, int) or index_str2.isdigit():
         dim2 = int(index_str2)
@@ -105,7 +104,24 @@ def getval_from_dimension(string):
     return val
 
 
+def get_val_from_oper(oper):
+    global recursive_value
+    if virtual_machine[oper][1] in avail_dict:
+        recursive_value = avail_dict[virtual_machine[oper][1]]
+        return
+    else:
+        # we can have var3 = var2, and var2=var1, so we must cover that case
+        if virtual_machine[oper][1] in virtual_machine:
+
+            get_val_from_oper(virtual_machine[oper][1])
+        else:
+            var_type = virtual_machine[oper][0]
+            recursive_value = int(virtual_machine[oper][1]) if var_type == 'int' else float(virtual_machine[oper][1])
+            return
+
+
 def operation(program_counter):
+    global recursive_value
     op_code, oper1, oper2, oper_result = quadruple_dict[program_counter]
 
     avail_flag = True if oper_result in avail_dict else False           # check if it's from an avail
@@ -124,11 +140,22 @@ def operation(program_counter):
     elif '[' in oper1:
         val1 = getval_from_dimension(oper1)
     elif oper1 in virtual_machine:
+        get_val_from_oper(oper1)
+        val1 = recursive_value
+
+        if not val1:
+            val1 = 0
+        """
         if virtual_machine[oper1][1] in avail_dict:
             val1 = avail_dict[virtual_machine[oper1][1]]
         else:
-            var1_type = virtual_machine[oper1][0]
-            val1 = int(virtual_machine[oper1][1]) if var1_type == 'int' else float(virtual_machine[oper1][1])
+            # we can have var3 = var2, and var2=var1, so we must cover that case
+            if virtual_machine[oper1][1] in virtual_machine:
+                var1_type = virtual_machine[virtual_machine[oper1][1]][0]
+                val1 = int(virtual_machine[virtual_machine[oper1][1]][1]) if var1_type == 'int' else float(virtual_machine[virtual_machine[oper1][1]][1])
+            else:
+                var1_type = virtual_machine[oper1][0]
+                val1 = int(virtual_machine[oper1][1]) if var1_type == 'int' else float(virtual_machine[oper1][1])"""
     elif oper1 in avail_dict:
         val1 = avail_dict[oper1]
     elif oper1 in procedure_directory:
@@ -147,11 +174,13 @@ def operation(program_counter):
         val2 = getval_from_dimension(oper2)
 
     elif oper2 in virtual_machine:
-        if virtual_machine[oper2][1] in avail_dict:
-            val2 = avail_dict[virtual_machine[oper2][1]]
-        else:
-            var2_type = virtual_machine[oper2][0]
-            val2 = int(virtual_machine[oper2][1]) if var2_type == 'int' else float(virtual_machine[oper2][1])
+        get_val_from_oper(oper2)
+        val2 = recursive_value
+        # if virtual_machine[oper2][1] in avail_dict:
+        #     val2 = avail_dict[virtual_machine[oper2][1]]
+        # else:
+        #     var2_type = virtual_machine[oper2][0]
+        #     val2 = int(virtual_machine[oper2][1]) if var2_type == 'int' else float(virtual_machine[oper2][1])
     elif oper2 in avail_dict:
         val2 = avail_dict[oper2]
     elif oper2 in procedure_directory:
@@ -268,6 +297,14 @@ def operation(program_counter):
             virtual_machine[oper_result][1] = aux_result
         program_counter += 1
 
+    elif op_code == '!=':
+        aux_result = val1 != val2
+        if avail_flag:
+            avail_dict[oper_result] = aux_result
+        else:
+            virtual_machine[oper_result][1] = aux_result
+        program_counter += 1
+
     elif op_code in ('goto','gotoFor'):
         program_counter = int(oper_result)
 
@@ -298,12 +335,18 @@ def operation(program_counter):
 
     elif op_code == 'write':
         if oper_result in virtual_machine:
-            if virtual_machine[oper_result][1] in avail_dict:
-                print(">> ", avail_dict[virtual_machine[oper_result][1]])
-            else:
-                print(">> ",virtual_machine[oper_result][1])
+            get_val_from_oper(oper_result)
+            val = recursive_value
+            # if virtual_machine[oper_result][1] in avail_dict:
+            #     print(">> ", avail_dict[virtual_machine[oper_result][1]])
+            # else:
+            #     print(">> ",virtual_machine[oper_result][1])
+            print(">> ", str(val))
         else:
-            print(">> ", str(oper_result))
+            if oper_result in avail_dict:
+                print(">> ", avail_dict[str(oper_result)])
+            else:
+                print(">> ", str(oper_result))
 
         program_counter += 1
 
@@ -312,13 +355,21 @@ def operation(program_counter):
 
 while PC != EOF:
     PC = operation(PC)
-    print(virtual_machine)
-    print(avail_dict)
 
+    """print()
+    print(virtual_machine)
+    print()
+    print(avail_dict)
+    print()"""
+
+print()
 for vm in virtual_machine:
     if vm in avail_dict:
         print("{0}: {1}".format(vm,avail_dict[virtual_machine]))
     else:
         print("{0}: {1}".format(vm,virtual_machine[vm]))
+
+print()
+print(avail_dict)
 
 # print(quadruple_dict,variable_tables,procedure_directory, sep='\n\n\n')
