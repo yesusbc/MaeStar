@@ -38,6 +38,7 @@ def p_editvariables(p):
     """ editvariables : singledimension
                       | multidimension
                       | multi_to_singledimension
+                      | swap_singledimension
                       | incrementdecrement
     """
 
@@ -51,6 +52,11 @@ def p_singledimension(p):
         square_obj.square('=', id1, '_', re)       # Save square
 
 
+def p_swap_singledimension(p):
+    """ swap_singledimension : ID dimensions ASSIGN ID dimensions SEMICOLON
+    """
+    print(p.__dict__)
+
 def p_multi_to_singledimension(p):
     """ multi_to_singledimension : ID ASSIGN ID dimensions SEMICOLON
     """
@@ -59,8 +65,14 @@ def p_multi_to_singledimension(p):
     if line_number in dimensions_dict:
 
         aux = 0
-        if len(operand_stack) > 4:    # PLY carry on the first next ID on the operand stack, but we dont need this right now
-            aux = operand_stack.pop()   # So we are going to ignore it for a bit
+        dimension_size = dimensions_dict[line_number].count('[')
+        if dimension_size == 1:
+            if len(operand_stack) > 3:    # PLY carry on the first next ID on the operand stack, but we dont need this right now
+                aux = operand_stack.pop()   # So we are going to ignore it for a bit
+
+        elif dimension_size == 2:
+            if len(operand_stack) > 4:    # PLY carry on the first next ID on the operand stack, but we dont need this right now
+                aux = operand_stack.pop()   # So we are going to ignore it for a bit
 
         id1 = operand_stack.pop(0)
         re = operand_stack.pop(0)
@@ -86,8 +98,15 @@ def p_multidimension(p):
 
     if line_number in dimensions_dict:
         aux = 0
-        if len(operand_stack) > 4:      # PLY carry on the first next ID on the operand stack, but we dont need this right now
-            aux = operand_stack.pop()   # So we are going to ignore it for a bit
+        dimension_size = dimensions_dict[line_number].count('[')
+        if dimension_size == 1:
+            if len(operand_stack) > 3:    # PLY carry on the first next ID on the operand stack, but we dont need this right now
+                aux = operand_stack.pop()   # So we are going to ignore it for a bit
+
+        elif dimension_size == 2:
+            if len(operand_stack) > 4:    # PLY carry on the first next ID on the operand stack, but we dont need this right now
+                aux = operand_stack.pop()   # So we are going to ignore it for a bit
+
 
         re = operand_stack.pop(0)
         id1 = operand_stack.pop()
@@ -103,6 +122,7 @@ def p_multidimension(p):
             operand_stack.pop()
         if aux:
             operand_stack.append(aux)
+
 
 
 def p_incrementdecrement(p):
@@ -292,7 +312,7 @@ def p_ckp_dowhile2(p):
 
 def p_variables(p):
     """ variables : type ID SEMICOLON variables
-                    | type ID dimensions SEMICOLON
+                    | type ID dimensions SEMICOLON variables
                     | empty
     """
     if str(p.slice[1]) == 'type':
@@ -353,10 +373,10 @@ def p_readwrite(p):
                     | WRITE LPAREN writecontent RPAREN SEMICOLON
                     | WRITE LPAREN STRING RPAREN SEMICOLON
     """
-    while(operand_stack):
-        id_name = operand_stack.pop()
-        operation = p[1]
-        square_obj.square(operation, '_', '_', id_name)
+    # while(operand_stack):
+    id_name = operand_stack.pop(0)
+    operation = p[1]
+    square_obj.square(operation, '_', '_', id_name)
 
 # X : A X
 # X : A
