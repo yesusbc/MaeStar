@@ -22,7 +22,11 @@ filenames = {
     'matrix': 'testfiles/matrix.txt',
     'for': 'testfiles/for.txt',
     'method': 'testfiles/methods.txt',
-    'dm': 'testfiles/dimensional_variables.txt'
+    'dm': 'testfiles/dimensional_variables.txt',
+    'factorial' : 'codefiles/xfact.txt' ,
+    'taylor' : 'codefiles/taylorseries.txt',
+    'power' : 'codefiles/xpowery.txt',
+    'mainmenu' : 'codefiles/mainmenu.txt'
 }
 
 file = open(filenames[filename], 'r')

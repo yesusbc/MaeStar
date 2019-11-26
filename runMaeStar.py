@@ -127,8 +127,8 @@ def operation(program_counter):
     avail_flag = True if oper_result in avail_dict else False           # check if it's from an avail
 
     # print("avail: ", avail_flag)
-    print(program_counter, " ",quadruple_dict[program_counter])
-    print("*"*10)
+    # print(program_counter, " ",quadruple_dict[program_counter])
+    # print("*"*10)
 
     # Get value of operand 1
     if isinstance(oper1, int):
@@ -172,7 +172,6 @@ def operation(program_counter):
         val2 = float(oper2)
     elif '[' in oper2:
         val2 = getval_from_dimension(oper2)
-
     elif oper2 in virtual_machine:
         get_val_from_oper(oper2)
         val2 = recursive_value
@@ -334,19 +333,23 @@ def operation(program_counter):
         program_counter += 1
 
     elif op_code == 'write':
-        if oper_result in virtual_machine:
-            get_val_from_oper(oper_result)
-            val = recursive_value
-            # if virtual_machine[oper_result][1] in avail_dict:
-            #     print(">> ", avail_dict[virtual_machine[oper_result][1]])
-            # else:
-            #     print(">> ",virtual_machine[oper_result][1])
-            print(">> ", str(val))
+        if oper_result[:1] == '__':
+            print(">> ",str(oper_result))
         else:
-            if oper_result in avail_dict:
-                print(">> ", avail_dict[str(oper_result)])
+            if oper_result in virtual_machine:
+                get_val_from_oper(oper_result)
+                val = recursive_value
+                # if virtual_machine[oper_result][1] in avail_dict:
+                #     print(">> ", avail_dict[virtual_machine[oper_result][1]])
+                # else:
+                #     print(">> ",virtual_machine[oper_result][1])
+                print(">> ", str(val))
             else:
-                print(">> ", str(oper_result))
+                if oper_result in avail_dict:
+                    print(">> ", avail_dict[str(oper_result)])
+                else:
+                    print(">> ", str(oper_result))
+
 
         program_counter += 1
 

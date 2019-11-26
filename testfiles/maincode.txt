@@ -1,19 +1,25 @@
-int x;
+int a;
 int b;
 int c;
 int d;
-double a;
-int f[5][5];
+int i;
+int x;
+
+double z;
+int f[5][4];
 
 method calcularcuadros(){
 	a = a * a;
-	f[4][5] = 5;
+	f[2][3] = 5;
 }
 
 method calcWithFor(){
-	for(a=0; a<5; a++)
+	for(a=0; a<2; a++)
 	{
-		
+		b = 1;
+		f[a][b] = 5;
+
+		b = f[a][1];		
 	}
 }
 
@@ -21,10 +27,13 @@ method calcWithFor(){
 main 
 { 
 
+	a = 5;
+	b = 2;
+	c = 0;
 	do
 	{
-		a = a plus b;
-	}while(a < c)
+		c = c plus(a * b);
+	}while(c < 50)
 
 
 #.* comment #.*

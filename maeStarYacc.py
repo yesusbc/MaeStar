@@ -351,7 +351,7 @@ def p_calling(p):
 def p_readwrite(p):
     """ readwrite :   READ LPAREN idreadingloop RPAREN SEMICOLON
                     | WRITE LPAREN writecontent RPAREN SEMICOLON
-                    | PRINTF LPAREN STRING RPAREN SEMICOLON
+                    | WRITE LPAREN STRING RPAREN SEMICOLON
     """
     while(operand_stack):
         id_name = operand_stack.pop()

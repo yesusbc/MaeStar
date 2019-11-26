@@ -39,8 +39,7 @@ reserved = {'if': 'IF',
             'method': 'METHOD',
             'plus': 'PLUS',
             'and': 'AND',
-            'or': 'OR',
-            'printf': 'PRINTF'
+            'or': 'OR'
             }
 
 
