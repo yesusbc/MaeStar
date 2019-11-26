@@ -1,0 +1,118 @@
+int pow;
+int powResult;
+int base;
+
+int true;
+
+int fact;
+int factResult;
+
+int base;
+int temp;
+int taylorResult;
+int y;
+
+int option;
+
+
+method power()
+{
+	while (pow != 0)
+	{
+		powResult = powResult * base;
+		pow--;
+	}
+}
+
+method factorial()
+{
+	if(fact > 1)
+	{
+		factResult = factResult * fact;
+		fact--;
+		call factorial();
+	}
+}
+
+method taylorSeries()
+{
+	write(""__base__"");
+	read(base);
+	for(y=0; y < 20; y++)
+	{
+		factResult = 1;
+		powResult = 1;
+		pow = y;
+		fact = y;
+		call power();
+		call factorial();
+		temp = powResult / factResult;
+		taylorResult = taylorResult plus temp;
+	}
+}
+
+method callPower()
+{
+	powResult = 1;
+	write(""__base__"");
+	read(base);
+	write(""__power__"");	
+	read(pow);
+	call power();
+	write(""__Resultado__"");
+	write(powResult);
+}
+
+method callFact()
+{
+	factResult = 1;
+	write(""__fact__"");
+	read(fact);
+	call factorial();
+	write(""__Resultado__"");
+	write(factResult);
+}
+
+method callTaylor()
+{
+	taylorResult = 0;
+	call taylorSeries();
+	write(""__Resultado__"");
+	write(taylorResult);
+}
+
+main 
+{ 
+	true = 1;
+	while(true == 1)
+	{
+		write(""__PROGRAM__"");
+		write(""__Potencia_1__"");
+		write(""__Factorial_2__"");
+		write(""__Taylor_3__"");
+		write(""__Quit_4__"");
+		
+
+		read(option);
+		if (option == 1)
+		{
+			call callPower();
+		}	
+
+		if (option == 2)
+		{
+			call callFact();
+		}	
+
+		if (option == 3)
+		{
+			call callTaylor();
+		}
+		if (option == 4)
+		{
+			write(""__GoodBye__"");
+			true = 0;
+		}	
+	}
+
+}

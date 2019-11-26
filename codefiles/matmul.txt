@@ -1,0 +1,142 @@
+int i;
+int j;
+int k;
+
+int matA[5][5];
+int matB[5][5];
+int matC[5][5];
+
+int dimM;
+
+int auxSum;
+int num;
+
+int auxMatA;
+int auxMatB;
+int auxMatC;
+
+int option;
+int true;
+
+int countColumns;
+int countRows;
+
+method fillMatrix()
+{
+	write(""__Fill_Matrixes__"");
+	write(""__MatrixA__"");
+	for(i=0; i<dimM; i++)
+	{
+		write(""__Row__"");
+		for(j=0; j<dimM; j++)
+		{
+			write(""__val__"");
+			read(num);
+			matA[i][j] = num;
+		}
+	}
+	write(""__MatrixB__"");
+	for(i=0; i<dimM; i++)
+	{
+		write(""__Row__"");
+		for(j=0; j<dimM; j++)
+		{
+			write(""__val__"");
+			read(num);
+			matB[i][j] = num;
+		}
+	}
+}
+
+
+method matMultiplication()
+{
+	for(i=0; i<dimM; i++)
+	{
+		for(j=0; j<dimM; j++)
+		{
+			auxSum = 0;
+			for(k=0; k<dimM; k++)
+			{
+				auxMatA = matA[i][k];
+				auxMatB = matB[k][j];
+				auxSum = auxSum plus (auxMatA * auxMatB);
+			}	
+			matC[i][j] = auxSum;
+		}
+	}
+}
+
+
+method checkDimMult()
+{
+	countColumns = 0;
+	countRows = 0;
+}
+
+
+method matSum()
+{
+	for(i=0; i<dimM; i++)
+	{
+		for(j=0; j<dimM; j++)
+		{
+			auxSum = 0;
+			auxMatA = matA[i][j];
+			auxMatB = matB[i][j];
+			auxSum = auxMatA plus auxMatB;
+			matC[i][j] = auxSum;
+		}
+	}
+}
+
+method printMatrix()
+{
+	write(""__Result__"");
+	for(i=0; i<dimM; i++)
+	{
+		for(j=0; j<dimM; j++)
+		{
+			auxMatC = matC[i][j];
+			write(auxMatC);
+		}
+	}
+}
+
+
+main
+{
+	dimM = 5;
+	true = 1;
+	while(true == 1)
+	{
+		write(""__PROGRAM__"");
+		write(""__Multiplicacion_1__"");
+		write(""__Suma_2__"");
+		write(""__Quit_3__"");
+		
+
+		read(option);
+		if (option == 1)
+		{
+			call fillMatrix();
+			call matMultiplication();
+			call printMatrix();
+		}	
+		if (option == 2)
+		{
+			call fillMatrix();
+			call matSum();
+			call printMatrix();
+		}	
+		if (option == 3)
+		{
+			write(""__GoodBye__"");
+			true = 0;
+		}	
+	}
+
+
+
+
+}

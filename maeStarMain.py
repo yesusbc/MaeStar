@@ -23,10 +23,13 @@ filenames = {
     'for': 'testfiles/for.txt',
     'method': 'testfiles/methods.txt',
     'dm': 'testfiles/dimensional_variables.txt',
-    'factorial' : 'codefiles/xfact.txt' ,
-    'taylor' : 'codefiles/taylorseries.txt',
-    'power' : 'codefiles/xpowery.txt',
-    'mainmenu' : 'codefiles/mainmenu.txt'
+    'factorial' : 'testfiles/xfact.txt' ,
+    'taylor' : 'testfiles/taylorseries.txt',
+    'power' : 'testfiles/xpowery.txt',
+    'mathmenu' : 'codefiles/mathmenu.txt',
+    'matmul' : 'codefiles/matmul.txt',
+    'sort' : 'codefiles/bubblesort.txt',
+    'between' : 'codefiles/between07.txt'
 }
 
 file = open(filenames[filename], 'r')

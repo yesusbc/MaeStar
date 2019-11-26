@@ -197,6 +197,7 @@ def p_cyclical(p):
 
 def p_for1section(p):
     """ for1section : ID ASSIGN CONST
+                    | ID ASSIGN ID
     """
     id_name = p.slice[1].__dict__['value']
     operation = p.slice[2].__dict__['value']

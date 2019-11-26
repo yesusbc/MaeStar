@@ -1,0 +1,34 @@
+int num;
+int true;
+
+main
+{
+	true = 1;
+	#.* Continues Loop #.*
+	while( true == 1)
+	{
+		write(""__Number__"");
+		read(num);
+
+		if(num > 0)
+		{
+			#.* We must check if it's smaller than 7 #.*
+			if(num < 7)
+			{
+				write(""__Between_0_7__"");
+			}
+			else
+			{
+				write(""__Not_Between_0_7__"");
+			}
+		}
+		else
+		{
+			write(""__Not_Between_0_7__"");
+		}
+
+		write(""__Another_Number_1_Yes_0_No__"");
+		read(true);
+	}
+	write(""__Good_Bye__"");
+}

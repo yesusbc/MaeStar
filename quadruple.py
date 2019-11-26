@@ -23,8 +23,10 @@ def get_avail():
     """
     :return: Return the list of avails used
     """
+    global avail_dict
     print("\n\n"+"*"*20 + "\n" + "Avail Dict: " + "\n"+"*"*20)
     print(avail_dict)
+    avail_dict = dict.fromkeys(avail_dict, 0)
     with open('availDict', 'wb') as file_handler:
         pickle.dump(avail_dict, file_handler)
         print("Avail Dictionary imported correctly")

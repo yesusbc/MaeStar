@@ -1,0 +1,89 @@
+int i;
+int j;
+int min_idx;
+
+int auxSwap1;
+int auxSwap2;
+
+int num;
+int numElem;
+int auxNumElem;
+
+int arr[10];
+
+int min_idx;
+int aux;
+int aux1;
+
+int auxArr1;
+int auxArr2;
+
+int true;
+
+method enterDigits()
+{
+	for(i=0; i<numElem; i++)
+	{
+		write(""__Val__"");
+		read(num);
+		arr[i] = num;
+	}
+}
+
+method sort()
+{
+	for(i=0; i < auxNumElem; i++)
+	{
+		min_idx = i;
+		aux = i plus 1;
+		for(j=aux; j < numElem; j++)
+		{
+			auxArr1 = arr[min_idx];
+			auxArr2 = arr[j];
+			if(auxArr1 > auxArr2)
+			{
+				min_idx = j;
+			}
+			auxArr1 = arr[j];
+			auxArr2 = arr[min_idx];
+			arr[min_idx] = auxArr1;
+			arr[j] = auxArr2;
+		}
+		
+
+	}
+}
+
+method printList()
+{
+	for(i=0; i < numElem; i++)
+	{
+		aux1 = arr[i];		
+		write(aux1);
+	}
+}
+
+
+main
+{
+	true = 1;
+	while(true == 1)
+	{
+		write(""__Number_Of_Elements_Max_10__"");
+		read(numElem);
+
+		call enterDigits();
+		auxNumElem = numElem - 1;
+		call sort();
+
+		write(""__Sorted_List_In_Ascending_Order__"");
+		call printList();
+
+		write(""__Another_Vector_1_Yes_0_No__"");
+		read(true);
+	}
+	write(""__Good_Bye__"");
+}
+
+
+
