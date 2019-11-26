@@ -19,7 +19,7 @@ method_set = set()
 
 
 # List of token names
-tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
+tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'MOD', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
            'LBRACKET', 'RBRACKET','LESSTHAN', 'GREATERTHAN', 'EQUALS', 'NOTEQUAL', 'COMA', 'SEMICOLON',
            'ASSIGN', 'PLUSPLUS', 'MINUSMINUS', 'STRING']
 
@@ -54,6 +54,7 @@ t_MINUS = r'\-'
 t_MINUSMINUS = r'\--'
 t_DIVISION = r'/'
 t_TIMES = r'\*'
+t_MOD = r'\%'
 t_LPAREN = r'\('
 t_RPAREN =  r'\)'
 t_LBRACE = r'\{'

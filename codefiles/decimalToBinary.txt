@@ -1,0 +1,77 @@
+int biNo[8];
+int decNo;
+int auxMod;
+
+int i;
+int aux;
+int j;
+
+int true;
+
+
+method convertBinary()
+{	
+	if(decNo > 1)
+	{
+		auxMod = decNo % 2;	
+		if (auxMod < 1)
+		{
+			auxMod = 0;
+		}else{
+			auxMod = 1;		
+		}
+
+		biNo[i] = auxMod;
+		
+		decNo = decNo / 2;
+		i = i plus 1;
+		call convertBinary();
+	}
+	else
+	{
+		#.* We add the final number #.*
+		auxMod = decNo % 2;	
+		if (auxMod < 1)
+		{
+			auxMod = 0;
+		}else{
+			auxMod = 1;		
+		}
+
+		biNo[i] = auxMod;
+
+		for(i=0; i <8; i++)
+		{
+			aux = biNo[i];
+			write(aux);
+		}
+	}
+}
+
+method cleanArray()
+{
+	for(i=0; i <8; i++)
+	{
+		biNo[i] = 0;
+	}
+}
+
+
+main
+{
+	#.* Recursion Convert decimal number to binary #.*
+	true = 1;
+	while(true == 1)
+	{
+		call cleanArray();
+		i = 0;		
+		write(""__Input_Decimal_Number__"");
+		read(decNo);
+		
+		call convertBinary();
+		
+		write(""__Another_Number_1_Yes_0_No__"");
+		read(true);
+	}
+	write(""__Good_Bye__"");
+}

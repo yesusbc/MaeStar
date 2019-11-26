@@ -29,7 +29,8 @@ filenames = {
     'mathmenu' : 'codefiles/mathmenu.txt',
     'matmul' : 'codefiles/matmul.txt',
     'sort' : 'codefiles/bubblesort.txt',
-    'between' : 'codefiles/between07.txt'
+    'between' : 'codefiles/between07.txt',
+    'dectobin' : 'codefiles/decimalToBinary.txt'
 }
 
 file = open(filenames[filename], 'r')

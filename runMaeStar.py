@@ -159,6 +159,14 @@ def operation(program_counter):
             virtual_machine[oper_result][1] = aux_result
         program_counter += 1
 
+    elif op_code == '%':
+        aux_result = val1 % val2
+        if avail_flag:
+            avail_dict[oper_result] = aux_result
+        else:
+            virtual_machine[oper_result][1] = aux_result
+        program_counter += 1
+
     elif op_code == '<':
         aux_result = val1 < val2
         if avail_flag:

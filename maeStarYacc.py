@@ -409,9 +409,10 @@ def p_arithterm(p):
     """ arithterm :   arithfunction
                     | arithfunction TIMES arithterm
                     | arithfunction DIVISION arithterm
+                    | arithfunction MOD arithterm
     """
     if len(p) > 2:
-        if str(p[2]) in ('*', '/'):
+        if str(p[2]) in ('*', '/', '%'):
             quadruple.generate_quadruple(p, square_obj, operand_stack)
 
 
