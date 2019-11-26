@@ -351,12 +351,12 @@ def p_calling(p):
 def p_readwrite(p):
     """ readwrite :   READ LPAREN idreadingloop RPAREN SEMICOLON
                     | WRITE LPAREN writecontent RPAREN SEMICOLON
+                    | PRINTF LPAREN STRING RPAREN SEMICOLON
     """
     while(operand_stack):
         id_name = operand_stack.pop()
         operation = p[1]
         square_obj.square(operation, '_', '_', id_name)
-
 
 # X : A X
 # X : A
@@ -380,7 +380,7 @@ def p_arithexp(p):
                     | arithterm MINUS arithexp
     """
     if len(p) > 2:
-        if str(p[2]) in ('plus', '-'):                         # ONLY FOR PLUS
+        if str(p[2]) in ('plus', '-'):
             quadruple.generate_quadruple(p, square_obj, operand_stack)
 
 
@@ -390,7 +390,7 @@ def p_arithterm(p):
                     | arithfunction DIVISION arithterm
     """
     if len(p) > 2:
-        if str(p[2]) in ('*', '/'):                         # ONLY FOR *
+        if str(p[2]) in ('*', '/'):
             quadruple.generate_quadruple(p, square_obj, operand_stack)
 
 
@@ -456,6 +456,7 @@ def p_empty (p):
 # Error rule for syntax errors
 def p_error(p):
     print("Syntax error in input!")
+    #raise RuntimeError("Syntax error in input!")
 
 
 def get_parser():

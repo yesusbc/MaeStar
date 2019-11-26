@@ -21,7 +21,7 @@ method_set = set()
 # List of token names
 tokens = [ 'ID', 'CONST', 'MINUS', 'DIVISION', 'TIMES', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
            'LBRACKET', 'RBRACKET','LESSTHAN', 'GREATERTHAN', 'EQUALS', 'NOTEQUAL', 'COMA', 'SEMICOLON',
-           'ASSIGN', 'PLUSPLUS', 'MINUSMINUS']
+           'ASSIGN', 'PLUSPLUS', 'MINUSMINUS', 'STRING']
 
 
 # Reserved words
@@ -39,7 +39,8 @@ reserved = {'if': 'IF',
             'method': 'METHOD',
             'plus': 'PLUS',
             'and': 'AND',
-            'or': 'OR'
+            'or': 'OR',
+            'printf': 'PRINTF'
             }
 
 
@@ -70,6 +71,7 @@ t_SEMICOLON = r'\;'
 t_ASSIGN = r'\='
 # To ignore characters spaces and tabs
 t_ignore = " \t\r"
+
 
 
 """
@@ -115,6 +117,12 @@ def t_ID(t):
             procedure_directory[value] = square_obj.get_num()
             # print(procedure_directory)
     return t
+
+
+def t_STRING(t):
+    r'"([^"\n]|(\\"))*"'
+    tval = t.__dict__
+    value = tval['value']
 
 
 # A regular expression rule for CONSTANTS (NUMBERS)
