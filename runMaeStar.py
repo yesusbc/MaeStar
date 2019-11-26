@@ -39,35 +39,36 @@ def isfloat(value):
 
 
 def get_dim1(string):
-    start = string.index('[')
+    start = string.index('[') + 1
     end = string.index(']')
-    index_str = string[end-start]
-    index_var = virtual_machine[index_str][1]
-    if isinstance(index_str,int) or index_str.isdigit():
+    index_str = string[start:end]
+
+    if isinstance(index_str, int) or index_str.isdigit():
         dim1 = int(index_str)
     else:
-        if index_var in avail_dict:
-            dim1 = int(avail_dict[index_var])
+        if index_str in avail_dict:
+            dim1 = int(avail_dict[index_str])
         else:
-            dim1 = int(index_var)
+            get_val_from_oper(index_str)
+            dim1 = recursive_value
 
     return dim1
 
 
 # TODO Minimize variables
 def get_dim2(string):
-    start = string.index('[')
+    start = string.index('[') + 1
     end = string.index(']')
-    index_str = string[end-start]
+    index_str = string[start:end]
 
     if isinstance(index_str, int) or index_str.isdigit():
         dim1 = int(index_str)
     else:
-        index_var1 = virtual_machine[index_str][1]      # Tal vez vaya arriba de is instance
-        if index_var1 in avail_dict:
-            dim1 = int(avail_dict[index_var1])
+        if index_str in avail_dict:
+            dim1 = int(avail_dict[index_str])
         else:
-            dim1 = int(index_var1)
+            get_val_from_oper(index_str)
+            dim1 = recursive_value
 
     aux_string = string[end+1:]
     end = aux_string.index(']')
@@ -106,18 +107,27 @@ def getval_from_dimension(string):
 
 def get_val_from_oper(oper):
     global recursive_value
-    if virtual_machine[oper][1] in avail_dict:
-        recursive_value = avail_dict[virtual_machine[oper][1]]
+    if isinstance(oper, int) or oper.isdigit():
+        recursive_value = oper
         return
+    elif virtual_machine[oper][1] in avail_dict:
+        # recursive_value = avail_dict[virtual_machine[oper][1]]
+        get_val_from_oper(avail_dict[virtual_machine[oper][1]])
+        # return
     else:
         # we can have var3 = var2, and var2=var1, so we must cover that case
         if virtual_machine[oper][1] in virtual_machine:
 
             get_val_from_oper(virtual_machine[oper][1])
         else:
-            var_type = virtual_machine[oper][0]
-            recursive_value = int(virtual_machine[oper][1]) if var_type == 'int' else float(virtual_machine[oper][1])
-            return
+            if '[' in str(virtual_machine[oper][1]):
+                recursive_value = getval_from_dimension(virtual_machine[oper][1])
+                if recursive_value in virtual_machine:
+                    recursive_value = virtual_machine[recursive_value][1]
+            else:
+                var_type = virtual_machine[oper][0]
+                recursive_value = int(virtual_machine[oper][1]) if var_type == 'int' else float(virtual_machine[oper][1])
+                return
 
 
 def operation(program_counter):
@@ -175,6 +185,7 @@ def operation(program_counter):
     elif oper2 in virtual_machine:
         get_val_from_oper(oper2)
         val2 = recursive_value
+
         # if virtual_machine[oper2][1] in avail_dict:
         #     val2 = avail_dict[virtual_machine[oper2][1]]
         # else:
@@ -186,6 +197,8 @@ def operation(program_counter):
         pass
     elif oper2.isalpha():
         raise RuntimeError("Local variable unreferenced before: {0} \n".format(oper2))
+
+
 
     # Check if it's a dimension variable
     dimension_flag = False
@@ -230,49 +243,59 @@ def operation(program_counter):
         if dimension_flag:
             dimension = oper_result.count('[')  # Get how many dimensions
             if dimension == 1:
-                start = oper_result.index('[')
+
+                start = oper_result.index('[') + 1
                 end = oper_result.index(']')
-                index = oper_result[end-start]
+                index = oper_result[start:end]
                 if isinstance(index, int) or index.isdigit():
                     dim1 = int(index)
                 else:
-                    index_var = virtual_machine[oper_result[end-start]][1]
-                    if index_var in avail_dict:
-                        dim1 = avail_dict[index_var]
+                    if index in avail_dict:
+                        dim1 = avail_dict[index]
                     else:
-                        dim1 = int(index_var)
+                        get_val_from_oper(index)
+                        dim1 = recursive_value
 
                 id_result = oper_result.partition("[")[0]
                 virtual_machine[id_result][1][dim1] = oper1
 
             elif dimension == 2:
-                start = oper_result.index('[')
+                start = oper_result.index('[') + 1
                 end = oper_result.index(']')
-                index = oper_result[end-start]
+                index = oper_result[start:end]
                 if isinstance(index, int) or index.isdigit():
                     dim1 = int(index)
                 else:
-                    index_var = virtual_machine[oper_result[end-start]][1]
-                    if index_var in avail_dict:
-                        dim1 = avail_dict[index_var]
+                    if index in avail_dict:
+                        dim1 = avail_dict[index]
                     else:
-                        dim1 = int(index_var)
+                        get_val_from_oper(index)
+                        dim1 = recursive_value
 
                 aux_string = oper_result[end+1:]
                 end = aux_string.index(']')
-
-                if isinstance(aux_string[1:end], int) or aux_string[1:end].isdigit():
-                    dim2 = int(aux_string[1:end])
+                index2 = aux_string[1:end]
+                if isinstance(index2, int) or index2.isdigit():
+                    dim2 = int(index2)
                 else:
-                    dim2 = int(virtual_machine[aux_string[1:end]][1])
+                    if index2 in avail_dict:
+                        dim2 = avail_dict[index2]
+                    else:
+                        get_val_from_oper(index2)
+                        dim2 = recursive_value
 
                 id_result = oper_result.partition("[")[0]
                 virtual_machine[id_result][1][dim1][dim2] = oper1
         else:
-            virtual_machine[oper_result][1] = oper1
+            if oper1 in avail_dict:
+                virtual_machine[oper_result][1] = avail_dict[oper1]
+            else:
+                get_val_from_oper(oper1)
+                virtual_machine[oper_result][1] = recursive_value
         program_counter += 1
 
     elif op_code == '<':
+        print(val1,val2)
         aux_result = val1 < val2
         if avail_flag:
             avail_dict[oper_result] = aux_result
@@ -343,7 +366,10 @@ def operation(program_counter):
                 #     print(">> ", avail_dict[virtual_machine[oper_result][1]])
                 # else:
                 #     print(">> ",virtual_machine[oper_result][1])
-                print(">> ", str(val))
+                if val in avail_dict:
+                    print(">> ", avail_dict[str(val)])
+                else:
+                    print(">> ", str(val))
             else:
                 if oper_result in avail_dict:
                     print(">> ", avail_dict[str(oper_result)])
@@ -359,11 +385,11 @@ def operation(program_counter):
 while PC != EOF:
     PC = operation(PC)
 
-    """print()
+    print()
     print(virtual_machine)
     print()
     print(avail_dict)
-    print()"""
+    print()
 
 print()
 for vm in virtual_machine:
