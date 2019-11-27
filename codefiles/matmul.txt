@@ -6,7 +6,13 @@ int matA[5][5];
 int matB[5][5];
 int matC[5][5];
 
-int dimM;
+int dimRB;
+int dimCB;
+int dimRA;
+int dimCA;
+
+int boolSum;
+int boolMul;
 
 int auxSum;
 int num;
@@ -18,28 +24,31 @@ int auxMatC;
 int option;
 int true;
 
-int countColumns;
-int countRows;
 
-method fillMatrix()
+method fillMatrixA()
 {
 	write(""__Fill_Matrixes__"");
 	write(""__MatrixA__"");
-	for(i=0; i<dimM; i++)
+	for(i=0; i<dimRA; i++)
 	{
 		write(""__Row__"");
-		for(j=0; j<dimM; j++)
+		for(j=0; j<dimCA; j++)
 		{
 			write(""__val__"");
 			read(num);
 			matA[i][j] = num;
 		}
 	}
+}
+
+
+method fillMatrixB()
+{
 	write(""__MatrixB__"");
-	for(i=0; i<dimM; i++)
+	for(i=0; i<dimRB; i++)
 	{
 		write(""__Row__"");
-		for(j=0; j<dimM; j++)
+		for(j=0; j<dimCB; j++)
 		{
 			write(""__val__"");
 			read(num);
@@ -49,14 +58,42 @@ method fillMatrix()
 }
 
 
+method checkDimMat()
+{
+	if(dimCA == dimRB)
+	{
+		boolMul = 1;
+	}
+	else
+	{
+		boolMul = 0;
+		write(""__IncorrectDim__"");
+	}
+}
+
+
+method checkDimSum()
+{
+	if( (dimRA == dimRB) and (dimCA == dimCB))
+	{
+		boolSum = 1;
+	}
+	else
+	{
+		boolSum = 0;
+		write(""__IncorrectDim__"");
+	}
+}
+
+
 method matMultiplication()
 {
-	for(i=0; i<dimM; i++)
+	for(i=0; i<dimRA; i++)
 	{
-		for(j=0; j<dimM; j++)
+		for(j=0; j<dimCB; j++)
 		{
 			auxSum = 0;
-			for(k=0; k<dimM; k++)
+			for(k=0; k<dimCA; k++)
 			{
 				auxMatA = matA[i][k];
 				auxMatB = matB[k][j];
@@ -68,18 +105,12 @@ method matMultiplication()
 }
 
 
-method checkDimMult()
-{
-	countColumns = 0;
-	countRows = 0;
-}
-
 
 method matSum()
 {
-	for(i=0; i<dimM; i++)
+	for(i=0; i<dimRA; i++)
 	{
-		for(j=0; j<dimM; j++)
+		for(j=0; j<dimCA; j++)
 		{
 			auxSum = 0;
 			auxMatA = matA[i][j];
@@ -90,53 +121,99 @@ method matSum()
 	}
 }
 
-method printMatrix()
+
+method printMatrixMul()
 {
 	write(""__Result__"");
-	for(i=0; i<dimM; i++)
+	for(i=0; i<dimRA; i++)
 	{
-		for(j=0; j<dimM; j++)
+		for(j=0; j<dimCB; j++)
 		{
 			auxMatC = matC[i][j];
 			write(auxMatC);
 		}
+		write(""_______"");
 	}
+}
+
+
+method printMatrixSum()
+{
+	write(""__Result__"");
+	for(i=0; i<dimRA; i++)
+	{
+		for(j=0; j<dimCA; j++)
+		{
+			auxMatC = matC[i][j];
+			write(auxMatC);
+		}
+		write(""_______"");
+	}
+}
+
+
+method declareMatrix()
+{
+	write(""__ROWS_MAT_A__"");
+	read(dimRA);
+	write(""__COLUMNS_MAT_A__"");
+	read(dimCA);
+
+	write(""__ROWS_MAT_B__"");
+	read(dimRB);
+	write(""__COLUMNS_MAT_B__"");
+	read(dimCB);
 }
 
 
 main
 {
-	dimM = 5;
+	write(""__PROGRAM__"");
+	call declareMatrix();
+
 	true = 1;
 	while(true == 1)
 	{
-		write(""__PROGRAM__"");
+		
 		write(""__Multiplicacion_1__"");
 		write(""__Suma_2__"");
-		write(""__Quit_3__"");
+		write(""__Declare_Matrix_Again_3__"");
+		write(""__Quit_4__"");
 		
 
 		read(option);
 		if (option == 1)
 		{
-			call fillMatrix();
-			call matMultiplication();
-			call printMatrix();
+			call checkDimMat();
+			if(boolMul == 1)
+			{
+				call fillMatrixA();
+				call fillMatrixB();
+				call matMultiplication();
+				call printMatrixMul();
+			}
+			
 		}	
 		if (option == 2)
 		{
-			call fillMatrix();
-			call matSum();
-			call printMatrix();
+			call checkDimSum();
+			if(boolSum == 1)
+			{
+				call fillMatrixA();
+				call fillMatrixB();
+				call matSum();
+				call printMatrixSum();
+			}
 		}	
 		if (option == 3)
+		{
+			call declareMatrix();
+		}
+		if (option == 4)
 		{
 			write(""__GoodBye__"");
 			true = 0;
 		}	
 	}
-
-
-
 
 }

@@ -127,7 +127,7 @@ def operation(program_counter):
         if '[' in oper_result:
             dimension_flag = True
 
-    # Operations
+    # Operations TODO call to function
     if op_code == 'plus' or op_code == '++':
         aux_result = val1 + val2
         if avail_flag:
@@ -193,6 +193,22 @@ def operation(program_counter):
 
     elif op_code == '!=':
         aux_result = val1 != val2
+        if avail_flag:
+            avail_dict[oper_result] = aux_result
+        else:
+            virtual_machine[oper_result][1] = aux_result
+        program_counter += 1
+
+    elif op_code == 'and':
+        aux_result = val1 and val2
+        if avail_flag:
+            avail_dict[oper_result] = aux_result
+        else:
+            virtual_machine[oper_result][1] = aux_result
+        program_counter += 1
+
+    elif op_code == 'or':
+        aux_result = val1 or val2
         if avail_flag:
             avail_dict[oper_result] = aux_result
         else:
