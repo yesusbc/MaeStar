@@ -19,6 +19,7 @@ PC_stack = list()                                   # Stack for program counter
 PC = next(iter(quadruple_dict.keys()))              # Program Counter as first element on the list
 EOF = len(quadruple_dict.keys())                    # End Of File
 
+avail_flag = False
 recursive_value = 0
 
 # Convert variable_tables to virtual_machine
@@ -102,8 +103,17 @@ def get_val_from_oper(oper):
     return
 
 
+def store_value(oper_result, aux_result):
+    global avail_flag
+    if avail_flag:
+        avail_dict[oper_result] = aux_result
+    else:
+        virtual_machine[oper_result][1] = aux_result
+
+
 def operation(program_counter):
     global recursive_value
+    global avail_flag
     op_code, oper1, oper2, oper_result = quadruple_dict[program_counter]
 
     avail_flag = True if oper_result in avail_dict else False           # check if it's from an avail
@@ -130,89 +140,67 @@ def operation(program_counter):
     # Operations TODO call to function
     if op_code == 'plus' or op_code == '++':
         aux_result = val1 + val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
     elif op_code == '-' or op_code == '--':
         aux_result = val1 - val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '*':
         aux_result = val1 * val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '/':
         aux_result = val1 / val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '%':
         aux_result = val1 % val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '<':
         aux_result = val1 < val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '>':
         aux_result = val1 > val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '==':
         aux_result = val1 == val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == '!=':
         aux_result = val1 != val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == 'and':
         aux_result = val1 and val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code == 'or':
         aux_result = val1 or val2
-        if avail_flag:
-            avail_dict[oper_result] = aux_result
-        else:
-            virtual_machine[oper_result][1] = aux_result
+        store_value(oper_result, aux_result)
+
         program_counter += 1
 
     elif op_code in ('goto','gotoFor'):
