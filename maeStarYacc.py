@@ -34,11 +34,18 @@ def p_statutes(p):
     """
 
 
+def p_severalstatutes(p):
+    """ severalstatutes :  statutes severalstatutes
+                        | statutes
+                        | empty
+    """
+
+
 def p_editvariables(p):
     """ editvariables : singledimension
                       | multidimension
+                      | swapdimension
                       | multi_to_singledimension
-                      | swap_singledimension
                       | incrementdecrement
     """
 
@@ -51,11 +58,6 @@ def p_singledimension(p):
         id1 = operand_stack.pop(0)
         square_obj.square('=', id1, '_', re)       # Save square
 
-
-def p_swap_singledimension(p):
-    """ swap_singledimension : ID dimensions ASSIGN ID dimensions SEMICOLON
-    """
-    print(p.__dict__)
 
 def p_multi_to_singledimension(p):
     """ multi_to_singledimension : ID ASSIGN ID dimensions SEMICOLON
@@ -123,7 +125,64 @@ def p_multidimension(p):
         if aux:
             operand_stack.append(aux)
 
+def p_dimensionoperation(p):
+    """ dimensionoperation : ID dimensions PLUS ID dimensions
+                        | ID dimensions MINUS ID dimensions
+                        | ID dimensions TIMES ID dimensions
+                        | ID dimensions DIVISION ID dimensions
+                        | ID dimensions LESSTHAN ID dimensions
+                        | ID dimensions GREATERTHAN ID dimensions
+                        | ID dimensions EQUALS ID dimensions
+                        | ID dimensions NOTEQUAL ID dimensions
+                        | ID dimensions logicexp ID dimensions
+    """
+    # adding dimension to array variables in quadruples
+    line_number = str(p.slice[1].__dict__['lineno'])
+    operation = p.slice[3].__dict__['value']
+    if line_number in dimensions_dict:
 
+        if len(operand_stack) > 4:
+            dim2_oper2 = operand_stack.pop()
+            dim1_oper2 = operand_stack.pop()
+            oper2 = operand_stack.pop()
+            oper2 = oper2+'['+dim1_oper2+']'+'['+dim2_oper2+']'
+
+            dim2_oper1 = operand_stack.pop()
+            dim1_oper1 = operand_stack.pop()
+            oper1 = operand_stack.pop()
+            oper1 = oper1+'['+dim1_oper1+']'+'['+dim2_oper1+']'
+        else:
+            dim1_oper2 = operand_stack.pop()
+            oper2 = operand_stack.pop()
+            oper2 = oper2+'['+dim1_oper2+']'
+
+            dim1_oper1 = operand_stack.pop()
+            oper1 = operand_stack.pop()
+            oper1 = oper1+'['+dim1_oper1+']'
+
+        temporal = avail.pop(0)
+        operand_stack.append(temporal)
+        avail_dict[temporal] = ""
+
+        square_obj.square(operation, oper1, oper2, temporal)
+
+
+def p_swapdimension(p):
+    """ swapdimension : ID dimensions ASSIGN ID dimensions SEMICOLON
+    """
+    line_number = str(p.slice[1].__dict__['lineno'])
+    operation = p.slice[3].__dict__['value']
+    if line_number in dimensions_dict:
+
+        oper1 = operand_stack.pop(0)
+        dim1_oper1 = operand_stack.pop(0)
+        oper1 = oper1+'['+dim1_oper1+']'
+
+        oper2 = operand_stack.pop(0)
+        dim1_oper2 = operand_stack.pop(0)
+        oper2 = oper2+'['+dim1_oper2+']'
+
+        square_obj.square('=', oper2, '_', oper1)
 
 def p_incrementdecrement(p):
     """ incrementdecrement : selectid PLUSPLUS SEMICOLON
@@ -179,13 +238,6 @@ def p_ckp_if3(p):
     num = square_obj.get_num()
     square_obj.quadruple_dict[dir1].pop()
     square_obj.quadruple_dict[dir1].append(num)
-
-
-def p_severalstatutes(p):
-    """ severalstatutes :  statutes severalstatutes
-                        | statutes
-                        | empty
-    """
 
 
 def p_cyclical(p):
@@ -418,6 +470,7 @@ def p_arithterm(p):
 
 def p_arithfunction(p):
     """ arithfunction : idconst
+                    | dimensionoperation
                     | LPAREN arithexp RPAREN
     """
 
@@ -446,6 +499,7 @@ def p_logicfunction(p):
                     | idconst EQUALS idconst
                     | idconst NOTEQUAL idconst
                     | LPAREN logicexp RPAREN
+                    | dimensionoperation
     """
     if len(p) > 2:
         if str(p[2]) in ('<', '>', '==', '!='):

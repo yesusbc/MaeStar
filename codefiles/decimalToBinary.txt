@@ -40,17 +40,19 @@ method convertBinary()
 
 		biNo[i] = auxMod;
 
-		for(i=0; i <8; i++)
+		for(i=7; i >0; i--)
 		{
 			aux = biNo[i];
 			write(aux);
 		}
+		aux = biNo[0];
+		write(aux);
 	}
 }
 
 method cleanArray()
 {
-	for(i=0; i <8; i++)
+	for(i=8; i <8; i++)
 	{
 		biNo[i] = 0;
 	}

@@ -14,6 +14,7 @@ int arr[10];
 int min_idx;
 int aux;
 int aux1;
+int temp;
 
 int auxArr1;
 int auxArr2;
@@ -22,6 +23,7 @@ int true;
 
 method enterDigits()
 {
+	
 	for(i=0; i<numElem; i++)
 	{
 		write(""__Val__"");
@@ -32,35 +34,37 @@ method enterDigits()
 
 method sort()
 {
+	auxNumElem = numElem - 1;
 	for(i=0; i < auxNumElem; i++)
-	{
-		min_idx = i;
-		aux = i plus 1;
-		for(j=aux; j < numElem; j++)
+	{	
+		aux1 = auxNumElem;
+		for(j=0; j < aux1; j++)
 		{
-			auxArr1 = arr[min_idx];
-			auxArr2 = arr[j];
-			if(auxArr1 > auxArr2)
+			aux = i plus 1;
+			if(arr[j] > arr[aux])
 			{
-				min_idx = j;
+				temp = arr[j];
+				arr[j] = arr[aux];
+				arr[aux] = temp;
 			}
-			auxArr1 = arr[j];
-			auxArr2 = arr[min_idx];
-			arr[min_idx] = auxArr1;
-			arr[j] = auxArr2;
+			
 		}
 		
 
 	}
 }
 
+
 method printList()
 {
-	for(i=0; i < numElem; i++)
+	numElem = numElem - 1;
+	for(i=numElem; i > 0 ; i--)
 	{
 		aux1 = arr[i];		
 		write(aux1);
 	}
+		aux1 = arr[0];		
+		write(aux1);
 }
 
 
@@ -73,7 +77,6 @@ main
 		read(numElem);
 
 		call enterDigits();
-		auxNumElem = numElem - 1;
 		call sort();
 
 		write(""__Sorted_List_In_Ascending_Order__"");
@@ -84,6 +87,5 @@ main
 	}
 	write(""__Good_Bye__"");
 }
-
 
 

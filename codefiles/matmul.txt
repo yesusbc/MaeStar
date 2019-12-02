@@ -95,9 +95,7 @@ method matMultiplication()
 			auxSum = 0;
 			for(k=0; k<dimCA; k++)
 			{
-				auxMatA = matA[i][k];
-				auxMatB = matB[k][j];
-				auxSum = auxSum plus (auxMatA * auxMatB);
+				auxSum = auxSum plus (matA[i][k] * matB[k][j]);
 			}	
 			matC[i][j] = auxSum;
 		}
@@ -113,9 +111,7 @@ method matSum()
 		for(j=0; j<dimCA; j++)
 		{
 			auxSum = 0;
-			auxMatA = matA[i][j];
-			auxMatB = matB[i][j];
-			auxSum = auxMatA plus auxMatB;
+			auxSum = matA[i][j] plus matB[i][j];
 			matC[i][j] = auxSum;
 		}
 	}

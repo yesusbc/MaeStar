@@ -10,10 +10,10 @@ from maeStarLex import variable_tables, procedure_directory
 import sys
 import pickle
 
-filename = sys.argv[1]
+# filename = sys.argv[1]
 
 
-filenames = {
+testfiles = {
     'ifelse': 'testfiles/ifelseprogram.txt',
     'while': 'testfiles/while.txt',
     'do-while': 'testfiles/dowhile.txt',
@@ -25,7 +25,10 @@ filenames = {
     'dm': 'testfiles/dimensional_variables.txt',
     'factorial' : 'testfiles/xfact.txt' ,
     'taylor' : 'testfiles/taylorseries.txt',
-    'power' : 'testfiles/xpowery.txt',
+    'power' : 'testfiles/xpowery.txt'
+}
+
+codefiles = {
     'mathmenu' : 'codefiles/mathmenu.txt',
     'matmul' : 'codefiles/matmul.txt',
     'sort' : 'codefiles/bubblesort.txt',
@@ -33,7 +36,12 @@ filenames = {
     'dectobin' : 'codefiles/decimalToBinary.txt'
 }
 
-file = open(filenames[filename], 'r')
+for key in codefiles.keys():
+    print("**",key,"**")
+filename_key = input("Choose one program ")
+
+
+file = open(codefiles[filename_key], 'r')
 code = file.read()
 print(code)
 

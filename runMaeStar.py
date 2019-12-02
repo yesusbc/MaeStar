@@ -1,5 +1,5 @@
 import pickle
-import time
+
 
 # We need to first load the previous objects
 with open('quadruples', 'rb') as file_object:
@@ -129,6 +129,8 @@ def operation(program_counter):
     # Get value of operand 2
     get_val_from_oper(oper2)
     val2 = recursive_value
+
+    # print(val1, "  ", val2)
 
 
     # Check if it's a dimension variable

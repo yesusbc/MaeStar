@@ -1,7 +1,10 @@
+import pickle
+
+
 # Avail
 avail = ['T'+str(i) for i in range(1, 100)]
 avail_dict = dict()
-import pickle
+
 
 class Quadruple:
     """
